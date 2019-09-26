@@ -56,6 +56,19 @@
   % \setbeamercolor{section in head/foot}{fg=white, bg=dblpYellow}
 }
 
+%for notes during presentation
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen}
+
+% workaround for bug with notes + xelatex, see https://github.com/josephwright/beamer/issues/337
+\makeatletter
+\def\beamer@framenotesbegin{% at beginning of slide
+     \usebeamercolor[fg]{normal text}
+      \gdef\beamer@noteitems{}%
+      \gdef\beamer@notes{}%
+}
+\makeatother
+
 \usepackage{my-beamer} %custom beamer template
 \usepackage{lmodern}
 
@@ -81,6 +94,7 @@
 
 \usepackage{booktabs} % For formal tables
 \usepackage{csvsimple} %input tables from csv
+\usepackage{threeparttable}
 
 \usepackage{mathtools} % cases for math
 \usepackage{amsmath}
@@ -92,11 +106,31 @@
 \newcommand*{\currentname}{\@currentlabelname}
 \makeatother
 
-\newcommand{\ndcg}{\ensuremath{\textsf{ndcg}}\xspace}
+\newcommand{\ndcg}[1]{\ensuremath{\textsf{ndcg}\textsf{#1}}\xspace}
 
 \usepackage{tikz} %frontend to the pgf system
 \usetikzlibrary{calendar, shapes.geometric}
 \usetikzlibrary{calc}
+
+\usepackage[beamer,customcolors]{hf-tikz}
+
+\tikzset{hl/.style={
+    set fill color=red!80!black!40,
+    set border color=red!80!black,
+  },
+}
+\RenewDocumentCommand{\tikzmarkin}{r<> o m D(){\belowrightoff} D(){\aboveleftoff}}{%
+  \IfNoValueTF{#2}{%true-val
+    \only<#1>{\tikz[remember picture,overlay]
+      \draw[line width=1pt,rectangle,disable rounded corners,fill=\fcol,draw=\bcol]
+      (pic cs:#3) ++(#4) rectangle (#5) node [anchor=base] (#3){}
+      ;}%
+  }{%false-val
+    \only<#1>{\tikz[remember picture,overlay]
+      \draw[line width=1pt,rectangle,disable rounded corners,fill=\fcol,draw=\bcol,#2]
+      (pic cs:#3) ++(#4) rectangle (#5) node [anchor=base] (#3){}
+      ;}}%
+}
 
 \usepackage[backend=bibtex,firstinits=true]{biblatex}
 \bibliography{main}
@@ -211,22 +245,134 @@
 %------------------------------------------------------------------------------
 %------------------------------------------------------------------------------
 \section{Motivation}
-% %------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+\subsection{The dblp Bibliography}
+%------------------------------------------------------------------------------
+
+% \begin{frame}{\currentname}\linespread{1.5}
+%
+% %note: work motivated by current challenges that dblp is facing
+% The dblp computer science bibliography:
+%
+%   \begin{itemize}
+%     \item on-line reference for bibliographic information on CS
+%     \item free access to high-quality bibliographic meta-data
+%   \end{itemize}
+% \end{frame}
+
+\begin{frame}{\currentname}\linespread{1.5}
+    \begin{figure}
+      \begin{center}
+        \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{img/dblp_main_page.eps}
+      \end{center}
+    \end{figure}
+    \url{https://dblp.org/}
+\end{frame}
+\note[itemize]{
+    \item on-line reference for bibliographic information on CS
+    \item free access to high-quality bibliographic meta-data
+}
+
+\begin{frame}{\currentname}\linespread{1.5}
+    \begin{figure}
+      \begin{center}
+        \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{img/this_paper.eps}
+      \end{center}
+    \end{figure}
+    \url{https://doi.org/10.1145/3197026.3197069}
+\end{frame}
+\note[itemize]{
+    \item here's such a bibliographic item
+    \item it is the paper to this talk
+    \item also url to the paper
+    \item I will put slide at the end again
+}
+
+\begin{frame}{\currentname}\linespread{1.5}
+    \begin{figure}
+      \begin{center}
+        \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{img/dblp_search.eps}
+      \end{center}
+    \end{figure}
+\end{frame}
+\note[itemize]{
+    \item keyword-based search possible
+    \item results: venues, publications
+}
+
+\begin{frame}{\currentname}\linespread{1.5}
+    \begin{figure}
+      \begin{center}
+        \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{img/dblp_author_entry.eps}
+      \end{center}
+    \end{figure}
+\end{frame}
+\note[itemize]{
+    \item publications connected with authors
+    \item author disambiguation
+}
+
+\begin{frame}{\currentname}\linespread{1.5}
+    \begin{figure}
+      \begin{center}
+        \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{img/dblp_journal.eps}
+      \end{center}
+    \end{figure}
+\end{frame}
+\note[itemize]{
+    \item browse journals
+    \item investigate specific volume of journal
+}
+
+\begin{frame}{\currentname}\linespread{1.5}
+    \begin{figure}
+      \begin{center}
+        \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{img/dblp_conference.eps}
+      \end{center}
+    \end{figure}
+\end{frame}
+\note[itemize]{
+    \item browse conference
+    \item list of events of which proceedings are present
+}
+
+\begin{frame}{\currentname}\linespread{1.5}
+    \begin{figure}
+      \begin{center}
+        \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{img/dblp_proceeding.eps}
+      \end{center}
+    \end{figure}
+\end{frame}
+\note[itemize]{
+    \item click on content -- proceeding paper records
+}
+
 %------------------------------------------------------------------------------
 \subsection{Maintaining the dblp Bibliography}
 %------------------------------------------------------------------------------
 \begin{frame}{\currentname}\linespread{1.5}
 
 %note: work motivated by current challenges that dblp is facing
-The dblp computer science bibliography:
+% Some statistics on dblp:
+%
+%   \begin{itemize}
+%     \item \textgreater 4.7 million publication records
+%     \item originating from \( \approx \)5,700 conferences and \( \approx \)1,600 journals
+%   \end{itemize}
 
-  \begin{itemize}
-    \item on-line reference for bibliographic information on CS
-    \item free access to high-quality bibliographic meta-data
-    \item \textgreater 4.7 million publication records
-    \item originating from \( \approx \)5,700 conferences and \( \approx \)1,600 journals
-  \end{itemize}
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio]{img/documents.eps}
+  \end{center}
+\end{figure}
 \end{frame}
+\note[itemize]{
+    \item what does it mean to maintain the dblp?
+    \item 4.7 million records in total
+    \item in the following I will show you some statistics
+    \item related to the research motivation
+}
 
 \begin{frame}{\currentname}{}\linespread{1.5}
   %note: distribution of publication types shows that more than half of all records in dblp originate from conference and workshops proceedings
@@ -236,6 +382,12 @@ The dblp computer science bibliography:
     \end{center}
   \end{figure}
 \end{frame}
+\note[itemize]{
+    \item conferences contribute to the lion's share of research
+    \item more than half of all records originate from conference or workshop proceedings
+    \item another large share are journal articles
+    \item other types of publication are neglectible
+}
 
 \begin{frame}{\currentname}{}\linespread{1.5}
   %note: also, the number of new entries to the dblp database per year is constantly growing; here: conference publication entries per year in the last few years always more than 150,000
@@ -246,6 +398,13 @@ The dblp computer science bibliography:
     \end{center}
   \end{figure}
 \end{frame}
+\note[itemize]{
+    \item focusing on conference and workshop papers here
+    \item past years: around 200k new entries per year
+    \item i.e. 4k per week
+    \item entries are bundled since only complete proceedings are added
+    \item still a lot of work (ca. 100-200 proceedings per month)
+}
 
 \begin{frame}{\currentname}{}\linespread{1.5}
   %note: these numbers show that there is a massive workload, and that dblp needs efficient monitoring at all stages of their workflow to keep up the high quality of their service
@@ -256,25 +415,36 @@ The dblp computer science bibliography:
     \end{center}
   \end{figure}
 \end{frame}
+\note[itemize]{
+    \item dblp workflow
+    \item sources for raw data: provided, or harvested/scraped
+    \item manual work involved to put raw data into system
+    \item quality control!
+    \item all steps have to be monitored
+    \item this is where this research fits in
+}
 
-% \begin{frame}{\currentname}{}
-%   \begin{figure}
-%     \begin{center}
-%       \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{img/dblp_stats.eps}
-%     \end{center}
-%   \end{figure}
-% \end{frame}
-\subsection{Motivation}
-
+%------------------------------------------------------------------------------
+\subsection{Keeping the Archive up to Date -- Obstacles}
+%------------------------------------------------------------------------------
 \begin{frame}{\currentname}{}\linespread{1.5}
-  %note: main challenges
+  \note[item]<1->{main challenges}
+  \note[item]<1>{time}
+  \note[item]<2>{budget}
+  \note[item]<3>{personnel}
+  \note[item]<4>{irregular schedules, will explain in a minute in more detail}
+  \note[item]<5>{not all records are equally important}
   \begin{itemize}
-    \item limited resources
-    \item conferences: arbitrary intervals
-    \item not all records equally important to dblp \\
-      \( \rightarrow \) identify and prioritize missing data in the acquisition process
-
+    \item<1->limited resources
+    \item<4->conference proceedings
+    \item<5>implicit relevance decisions
   \end{itemize}
+
+  \includegraphics<1-3>[width=80pt,height=80pt,keepaspectratio]{img/time.eps}%
+  \includegraphics<2-3>[width=80pt,height=80pt,keepaspectratio]{img/budget.eps}%
+  \includegraphics<3>[width=80pt,height=80pt,keepaspectratio]{img/personnel.eps}%
+  \centering\includegraphics<4>[width=100pt,height=100pt,keepaspectratio]{img/irregular_schedule.eps}%
+  \centering\includegraphics<5>[width=80pt,height=80pt,keepaspectratio]{img/relevance_decision.eps}%
 \end{frame}
 
 %------------------------------------------------------------------------------
@@ -288,40 +458,39 @@ The dblp computer science bibliography:
 
   \bigskip
 
-  \( \rightarrow \)  Ranking problem:  rank the set of conferences in descending order according to their relevance to the database
+  \( \rightarrow \)  Ranking problem: have the conferences for which an update is expected next ranked highest
 \end{frame}
 
 %------------------------------------------------------------------------------
 \section{Method}
 %------------------------------------------------------------------------------
-\begin{frame}{\currentname}\linespread{1.5}
-  \begin{itemize}
-    \item base ranking primarily dependent on temporal patterns
-    \begin{itemize}
-      \item relation between past event dates and dates of entry to dblp %approximate publication date
-    \end{itemize}
-    \item add additional factors to study influence on ranking
-    \begin{itemize}
-      \item loosely based on information quality / dblp quality criteria % e.g. from the quality criteria: ``The set of authors should be international.''
-    \end{itemize}
-  \end{itemize}
-
-\end{frame}
 
 \begin{frame}{\currentname}\linespread{1.5}
-  Temporal patterns
-  \begin{itemize}
-    \item basic date-based calculation of expectancy\\
-    \( \rightarrow \) delay as base scoring factor
-    \item publication date of proceedings not available -- use entry date to dblp database as approximation
-  \end{itemize}
+  In fact, we are trying to \textit{model} the relevance decisions of our archive curators.
 
-  % \begin{figure}
-  %   \begin{center}
-  %     \includegraphics[width=2cm,keepaspectratio]{img/november.eps}
-  %   \end{center}
-  % \end{figure}
+  \centering
+  \includegraphics[width=100pt,height=100pt,keepaspectratio]{img/relevance_decision.eps}
+  \includegraphics[width=100pt,height=100pt,keepaspectratio]{img/prioritization.eps}
 \end{frame}
+\note[itemize]{
+    \item factors loosely based on information quality / dblp quality criteria
+    \item see dblp quality criteria: ``The set of authors should be international.''
+}
+
+\begin{frame}{\currentname}\linespread{1.5}
+    Basis: temporal patterns
+    \begin{itemize}
+        \item base calculations on patterns from historical data
+        \item use relation between past event dates and dates of entry to dblp
+    \end{itemize}
+    \includegraphics[width=100pt,height=100pt,keepaspectratio]{img/temporal_pattern.eps}%
+    \includegraphics[width=100pt,height=100pt,keepaspectratio]{img/entry_date.eps}%
+\end{frame}
+\note[itemize]{
+    \item publication date not available
+    \item use entry date as approximation of publication date
+    \item coming back to irregularities: example
+}
 
 % %%test slide for tikz
 % \begin{frame}
@@ -436,100 +605,107 @@ The dblp computer science bibliography:
 %     \makeatother
 
 \begin{frame}
-  \only<1>{2011}
-  \only<2>{2012}
-  \only<3>{2013}
-  \only<4>{2014}
-  \only<5>{2015}
-\begin{center}
-    % \begin{tikzpicture}[scale=0.6, every calendar/.style={
-    %     month label above centered,
-    %       month text={\textit{\%mt}},
-    %       year label left,
-    %   }]
-    \begin{tikzpicture}[scale=0.6]
+    \note[item]<1>{2014: conf in june, enter proceeding in september}
+    \note[item]<2>{2015: basically same pattern}
+    \note[item]<3>{2016: conf a month later, but proceeding added sooner}
+    \note[item]<4>{2017: conf again in june, proceeding added later}
+    \note[item]<5>{2018: pattern as few years before}
+    \only<1>{2014}
+    \only<2>{2015}
+    \only<3>{2016}
+    \only<4>{2017}
+    \only<5>{2018}
+    \begin{center}
+        % \begin{tikzpicture}[scale=0.6, every calendar/.style={
+        %     month label above centered,
+        %       month text={\textit{\%mt}},
+        %       year label left,
+        %   }]
+        \begin{tikzpicture}[scale=0.6]
 
-      \scriptsize
-      \foreach \i in {1,...,12}
-      {
-        \pgfmathtruncatemacro{\y}{(\i - 1) / 4};
-        \pgfmathtruncatemacro{\x}{\i - 4 * \y};
-        \only<1>\calendar (cal) [dates=2011-\i-01 to 2011-\i-last, month label above centered, week list, day xshift=1.9em] at (4*\x,-4*\y);
-        \only<2>\calendar (cal) [dates=2012-\i-01 to 2012-\i-last, month label above centered, week list] at (4*\x,-4*\y);
-        \only<3>\calendar (cal) [dates=2013-\i-01 to 2013-\i-last, month label above centered, week list] at (4*\x,-4*\y);
-        \only<4>\calendar (cal) [dates=2014-\i-01 to 2014-\i-last, month label above centered, week list] at (4*\x,-4*\y);
-        \only<5>\calendar (cal) [dates=2015-\i-01 to 2015-\i-last, month label above centered, week list] at (4*\x,-4*\y);
-      }
+          \scriptsize
+          \foreach \i in {1,...,12}
+          {
+            \pgfmathtruncatemacro{\y}{(\i - 1) / 4};
+            \pgfmathtruncatemacro{\x}{\i - 4 * \y};
+            \only<1>\calendar (cal) [dates=2014-\i-01 to 2014-\i-last, month label above centered, week list, day xshift=1.9em] at (4*\x,-4*\y);
+            \only<2>\calendar (cal) [dates=2015-\i-01 to 2015-\i-last, month label above centered, week list] at (4*\x,-4*\y);
+            \only<3>\calendar (cal) [dates=2016-\i-01 to 2016-\i-last, month label above centered, week list] at (4*\x,-4*\y);
+            \only<4>\calendar (cal) [dates=2017-\i-01 to 2017-\i-last, month label above centered, week list] at (4*\x,-4*\y);
+            \only<5>\calendar (cal) [dates=2018-\i-01 to 2018-\i-last, month label above centered, week list] at (4*\x,-4*\y);
+          }
 
-      \only<1>{\draw[red,ultra thick]($(cal-2011-06-17.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2011-06-17.north west) + (1.2mm,-1.2mm)$){};}
-      \only<1>{\draw[blue,ultra thick]($(cal-2011-09-25.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2011-09-25.north west) + (1.2mm,-1.2mm)$){};}
+          \only<1>{\draw[red,ultra thick]($(cal-2014-06-17.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2014-06-17.north west) + (1.2mm,-1.2mm)$){};}
+          \only<1>{\draw[blue,ultra thick]($(cal-2014-09-25.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2014-09-25.north west) + (1.2mm,-1.2mm)$){};}
 
-      \only<2>{\draw[red,ultra thick]($(cal-2012-06-14.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2012-06-14.north west) + (1.2mm,-1.2mm)$){};}
-      \only<2>{\draw[blue,ultra thick]($(cal-2012-09-12.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2012-09-12.north west) + (1.2mm,-1.2mm)$){};}
+          \only<2>{\draw[red,ultra thick]($(cal-2015-06-14.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2015-06-14.north west) + (1.2mm,-1.2mm)$){};}
+          \only<2>{\draw[blue,ultra thick]($(cal-2015-09-12.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2015-09-12.north west) + (1.2mm,-1.2mm)$){};}
 
-      \only<3>{\draw[red,ultra thick]($(cal-2013-07-26.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2013-07-26.north west) + (1.2mm,-1.2mm)$){};}
-      \only<3>{\draw[blue,ultra thick]($(cal-2013-08-22.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2013-08-22.north west) + (1.2mm,-1.2mm)$){};}
+          \only<3>{\draw[red,ultra thick]($(cal-2016-07-26.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2016-07-26.north west) + (1.2mm,-1.2mm)$){};}
+          \only<3>{\draw[blue,ultra thick]($(cal-2016-08-22.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2016-08-22.north west) + (1.2mm,-1.2mm)$){};}
 
-      \only<4>{\draw[red,ultra thick]($(cal-2014-06-12.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2014-06-12.north west) + (1.2mm,-1.2mm)$){};}
-      \only<4>{\draw[blue,ultra thick]($(cal-2014-10-11.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2014-10-11.north west) + (1.2mm,-1.2mm)$){};}
+          \only<4>{\draw[red,ultra thick]($(cal-2017-06-12.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2017-06-12.north west) + (1.2mm,-1.2mm)$){};}
+          \only<4>{\draw[blue,ultra thick]($(cal-2017-10-11.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2017-10-11.north west) + (1.2mm,-1.2mm)$){};}
 
-      \only<5>{\draw[red,ultra thick]($(cal-2015-06-25.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2015-06-25.north west) + (1.2mm,-1.2mm)$){};}
-      \only<5>{\draw[blue,ultra thick]($(cal-2015-09-15.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2015-09-15.north west) + (1.2mm,-1.2mm)$){};}
+          \only<5>{\draw[red,ultra thick]($(cal-2018-06-25.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2018-06-25.north west) + (1.2mm,-1.2mm)$){};}
+          \only<5>{\draw[blue,ultra thick]($(cal-2018-09-15.south east) + (-1.2mm,1.2mm)$) rectangle ($(cal-2018-09-15.north west) + (1.2mm,-1.2mm)$){};}
 
-      %Legende?
-      % \draw[blue,ultra thick] (0,0) rectangle +(1.2mm,-1.2mm) [label=event date] {};
-      % \draw[red,ultra thick] (0,0) rectangle +(1.2mm,-1.2mm) [label=entry date]{};
+          %Legende?
+          % \draw[blue,ultra thick] (0,0) rectangle +(1.2mm,-1.2mm) [label=event date] {};
+          % \draw[red,ultra thick] (0,0) rectangle +(1.2mm,-1.2mm) [label=entry date]{};
 
-    %shapes examples:
-    % \node [draw,regular polygon,regular polygon sides=3] {};
-    % \node [draw,cloud] {};
-    % \node [fill=yellow,draw,star] {};
-    \end{tikzpicture}
-\end{center}
-
+        %shapes examples:
+        % \node [draw,regular polygon,regular polygon sides=3] {};
+        % \node [draw,cloud] {};
+        % \node [fill=yellow,draw,star] {};
+        \end{tikzpicture}
+    \end{center}
 \end{frame}
 
 \begin{frame}{\currentname}\linespread{1.5}
 \begin{itemize}
   \item Example conference:
   \begin{itemize}
-    \item interval: 1
+    \item interval: 1 year
     \item usual month: June
-    % \item last entry: 2015-06
     \item usual delay: 3 months
   \end{itemize}
-  \( \rightarrow \) expected: September 2016
-  \item 177 other conferences also due in September
-  \item base scoring: raw delay between expected and current date; \\
-  mapping of raw delay to intervals to smooth out high delays
+  \( \rightarrow \) expected: September 2019
+  \item 180 other conferences also due in September
+  \item base scoring: delay between expected and current date
 \end{itemize}
-
 \end{frame}
+\note[itemize]{
+    \item use median or mode statistics to get these "usual" patterns
+}
 
 \begin{frame}{\currentname}\linespread{1.5}
-  \setbeamercovered{transparent}
-  \only<1>{Additional factors to refine priority ranking:}
-  \only<2->{Data sets:}
+\note[item]<1>{these are the factors we have defined that might influence the prioritization}
+\note[item]<1>{and the datasets or how we operationalized the factors}
+\note[item]<2>{2 sources for conference ratings: CORE and the one cited here}
+\note[item]<3-4>{MAG matched with dblp records where possible}
+\note[item]<5-6>{activity in terms of last appearance in dblp in relation to regular interval}
+\note[item]<7-8>{internationality in terms of a) venue countries, and b) author affiliations}
+\note[item]<9-10>{prominence reflects the share of works in dblp from specific authors}
+\note[item]<9-10>{reasoning: proceedings with papers from a lot of prominent authors (for dblp) should be treated with priority}
+\note[item]<11-12>{size in terms of average number of papers}
+\note[item]<13-14>{log refers to so-called struggling-sessions, where we have signals that users searched for some item without success}
+  % \setbeamercovered{transparent}
+  \only<1->{Ranking factors and data sets:}
   \begin{itemize}
-    \item conference rating\only<3->{: CORE; Martins et al. \footfullcite{Martins:2009:AssessQualityOfConferences}}
-    \item citation counts\only<4->{: Microsoft Academic Graph (MAG)}
-    \item discontinuity indicator\only<5->{: self-defined, in terms of \#years since last appearance in dblp}
-    \item internationality\only<6->{: self-defined, in terms of \#countries of conference venues}
-    \item author prominence\only<7->{: dblp data}
+    \item<1-> conference rating\only<2->{: CORE; Martins et al. \footfullcite{Martins:2009:AssessQualityOfConferences}}
+    \item<3-> citation counts\only<4->{: Microsoft Academic Graph (MAG)}
+    \item<5-> activity indicator\only<6->{: dblp data}
+    \item<7-> internationality\only<8->{: dblp data}
+    \item<9-> author prominence\only<10->{: dblp data}
+    \item<11-> conference size\only<12->{: dblp data}
+    \item<13-> log\only<14->{: dblp data}
   \end{itemize}
 \end{frame}
 
-% \begin{frame}{\currentname}\linespread{1.5}
-%   Data sets
-%   \begin{itemize}
-%     \item conference rank: CORE, ???
-%     \item citation counts: MAG
-%     \item discontinuity indicator: self-defined, in terms of \#years since last appearance in dblp
-%     \item internationality: self-defined, in terms of \#countries of conference venues
-%     \item author prominence: dblp data
-%   \end{itemize}
-% \end{frame}
-
+%------------------------------------------------------------------------------
+\subsection{Evaluation}
+%------------------------------------------------------------------------------
 \begin{frame}{\currentname}\linespread{1.5}
   Gold standard:
 
@@ -538,47 +714,64 @@ The dblp computer science bibliography:
     \item pseudo-relevance:
     \begin{itemize}
       \item distance in months between current month and month of ingestion into dblp
-      \item mapped onto intervals
       \item inverted to give higher values to more recent entries
     \end{itemize}
   \end{itemize}
 \end{frame}
-
+%------------------------------------------------------------------------------
 \section{Our Results/Contribution}
-
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
 \subsection{Main Results}
-
-% \begin{frame}{\currentname}\linespread{1.5}
-%   \begin{itemize}
-%     \item every factor outperforms baseline
-%     \item some fluctuation over the year
-%   \end{itemize}
-% \end{frame}
+%------------------------------------------------------------------------------
 
 \begin{frame}{\currentname}\linespread{1.5}
-  \begin{itemize}
-    \item every factor outperforms baseline
-    % \item some fluctuation over the year
-  \end{itemize}
-  \begin{table}[t]
-  \caption{Overview on \ndcg-100 values for each month and the year's average. }\label{table/resultsMonths}
+    \note[item]<1>{some fluctuation over the year}
+    \note[item]<1>{some more than others}
+    \note[item]<1>{bold: better than baseline}
+    \note[item]<1>{if we average, these 4 factors beat the baseline}
+    \note[item]<2>{activity factor with best overall score}
+    \note[item]<3>{rating factor consistently above baseline, even if not best on average}
+    \note[item]<4>{prominence factor also doing well}
+    \note[item]<5>{log factor barely above baseline}
+    Overview on \ndcg{}-100 values for each evaluated month with the average.
     \begin{center}
-  	\csvautobooktabular[separator=semicolon]{tables/ndcg2.csv}
+        \resizebox{\textwidth}{!}{
+            \input{tables/ndcg-100.tex}
+        }
     \end{center}
-  \end{table}
 \end{frame}
 
 \begin{frame}{\currentname}\linespread{1.5}
-  \begin{table}[t]
-  \caption{Comparison of \ndcg values on different cut-offs. Statistical differences to the baseline tested with two-sided t-test ($*** = p<0.001$, $** = p<0.01$, $ * = p<0.05 $).}\label{table/resultsCutoffs}
+    \note[item]<1>{differences across cut-off levels}
+    \note[item]<1>{cut-off 10 or 20 might represent day-to-day work}
+    \note[item]<1>{cut-off 100-200 might reflect less frequent, more thorough overview of pending updates}
+    \note[item]<1>{also did significance testing here}
+    \note[item]<2->{across all cut-off levels, the best performing factors are these three}
+    \note[item]<2->{at higher cutoffs, difference to the baseline gains significance}
+    Comparison of \ndcg{} values on different cut-offs.
     \begin{center}
-      \csvautobooktabular[separator=semicolon]{tables/ndcgcutoffs.csv}
+        \resizebox{\textwidth}{!}{
+            \input{tables/ndcg_simple.tex}
+        }
     \end{center}
-  \end{table}
 \end{frame}
 
+
+\begin{frame}{\currentname}\linespread{1.5}
+    \note[item]<1>{combine best performing factors}
+    \note[item]<1>{combinations with rating perform very well}
+    \note[item]<2>{already at low cut-off levels}
+    Comparison of \ndcg{} values on different cut-offs for combined factors.
+    \begin{center}
+        \resizebox{\textwidth}{!}{
+            \input{tables/ndcg_combi.tex}
+        }
+    \end{center}
+\end{frame}
+%------------------------------------------------------------------------------
 \subsection{Interpretation}
-
+%------------------------------------------------------------------------------
 \begin{frame}{\currentname}\linespread{1.5}
   Best performing factors in terms of information quality:
   \begin{itemize}
@@ -588,25 +781,31 @@ The dblp computer science bibliography:
     \end{itemize}
     \item currency:
     \begin{itemize}
-      \item expressed through penalty by discontinuity
+      \item expressed through activity
     \end{itemize}
     \item popularity:
       \begin{itemize}
-        \item expressed through citation, internationality and prominence scores
+        \item expressed through prominence and logs
       \end{itemize}
   \end{itemize}
 \end{frame}
-%
-% \subsection{Basic Ideas for Proofs/Implementation}
-%
-% \begin{frame}{\currentname}\linespread{1.5}
-% \end{frame}
-%
-% \begin{frame}{\currentname}\linespread{1.5}
-% \end{frame}
 
+%------------------------------------------------------------------------------
+\subsection{Limitations}
+%------------------------------------------------------------------------------
+\begin{frame}{\currentname}\linespread{1.5}
+    \begin{itemize}
+        \item ratings available for only about 20\% of the data
+        \item log data hard to interpret
+    \end{itemize}
+\end{frame}
+
+%
+% \begin{frame}{\currentname}\linespread{1.5}
+% \end{frame}
+%------------------------------------------------------------------------------
 \section*{Summary}
-
+%------------------------------------------------------------------------------
 \begin{frame}{\currentname}\linespread{1.5}
 
   % Keep the summary *very short*.
@@ -641,12 +840,14 @@ Thank you for your attention!\\
 Feel free to ask any questions now!\bigskip
 
 Contact us:\\
-\url{mandy.neumann@th-koeln.de}\\
-\url{michelsc@uni-trier.de}\\
-\url{philipp.schaer@th-koeln.de}\\
-\url{schenkel@uni-trier.de}\bigskip
+\href{mailto:mandy.neumann@th-koeln.de}{\nolinkurl{mandy.neumann@th-koeln.de}}\\
+\href{mailto:michelsc@uni-trier.de}{\nolinkurl{michelsc@uni-trier.de}}\\
+\href{mailto:philipp.schaer@th-koeln.de}{\nolinkurl{philipp.schaer@th-koeln.de}}\\
+\href{mailto:schenkel@uni-trier.de}{\nolinkurl{schenkel@uni-trier.de}}\bigskip
 
-Visit \url{http://dblp.uni-trier.de}
+Visit \url{https://dblp.org}
+
+Read the paper: \url{https://doi.org/10.1145/3197026.3197069}
 
 \end{frame}
 

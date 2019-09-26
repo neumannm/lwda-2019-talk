@@ -1,0 +1,11 @@
+\begin{tabular}{lllll}
+    \toprule
+    system  & \ndcg{20}      & \ndcg{30}       & \ndcg{100}      & \ndcg{200}    \\ \midrule
+    base    & 0.533         & 0.511             & 0.475             & 0.396  \\
+    \tikzmarkin<2>[hl]{a3}R $\times$ A      & \textbf{0.628*} & \textbf{0.629***} & \textbf{0.561***} & \textbf{0.547***}\tikzmarkend{a3}\\
+    \tikzmarkin<4>[hl]{c3}R $\times$ P         & \textbf{0.582}  & \textbf{0.603**}  & \textbf{0.550**}  & \textbf{0.498***}\tikzmarkend{c3}\\
+    \tikzmarkin<3>[hl]{b3}R $\times$ A $\times$ P  & \textbf{0.587}  & \textbf{0.606**}  & \textbf{0.574***} & \textbf{0.542***}\tikzmarkend{b3}\\
+    A $\times$ P        & \textbf{0.547}  & \textbf{0.532}    & \textbf{0.529**}  & \textbf{0.509***} \\
+    \bottomrule
+    \multicolumn{5}{c}{${}^{***}=p<0.001$, ${}^{**}=p<0.01$, ${}^{*}=p<0.05 $}
+\end{tabular}

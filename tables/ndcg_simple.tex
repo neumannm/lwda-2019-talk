@@ -1,0 +1,15 @@
+\begin{tabular}{lllll}
+     \toprule
+     system & \ndcg{10} & \ndcg{20} & \ndcg{100} & \ndcg{200} \\ \midrule
+     base & 0.566 & 0.533 & 0.475 & 0.396 \\
+     \tikzmarkin<2>[hl]{a2}active (A) & \textbf{0.615} & \textbf{0.588} & \textbf{0.536*} & \textbf{0.517**} \tikzmarkend{a2} \\
+     \tikzmarkin<3>[hl]{b2}rate (R) & \textbf{0.567} & \textbf{0.576} & \textbf{0.511**} & \textbf{0.478**} \tikzmarkend{b2} \\
+     size & \textbf{0.577} & \textbf{0.540} & 0.473 & \textbf{0.398} \\
+     intl & 0.304 & 0.330 & 0.361 & 0.281 \\
+     affil & 0.543 & 0.523 & 0.471 & \textbf{0.400} \\
+     cite & 0.566 & 0.533 & 0.469 & 0.395 \\
+     \tikzmarkin<4>[hl]{c2}prom (P) & 0.535 & \textbf{0.553} & \textbf{0.494} & \textbf{0.485***} \tikzmarkend{c2} \\
+     log & 0.560 & 0.528 & \textbf{0.480} & \textbf{0.407*} \\
+     \bottomrule
+     \multicolumn{5}{c}{${}^{***}=p<0.001$, ${}^{**}=p<0.01$, ${}^{*}=p<0.05 $}
+\end{tabular}
