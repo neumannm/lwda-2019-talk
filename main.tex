@@ -602,17 +602,15 @@
 \subsection{Evaluation}
 %------------------------------------------------------------------------------
 \begin{frame}{\currentname}\linespread{1.5}
-  Gold standard:
-
-  \begin{itemize}
-    \item human judgments hardly practicable
-    \item pseudo-relevance:
+  Gold standard: pseudo-relevance:
     \begin{itemize}
       \item distance in months between current month and month of ingestion into dblp
       \item inverted to give higher values to more recent entries
     \end{itemize}
-  \end{itemize}
 \end{frame}
+\note[itemize]{
+    \item human judgments hardly practicable
+}
 %------------------------------------------------------------------------------
 \section{Our Results/Contribution}
 %------------------------------------------------------------------------------
@@ -684,6 +682,20 @@
       \end{itemize}
   \end{itemize}
 \end{frame}
+\note[itemize]{
+    \item credibility:
+    \begin{itemize}
+      \item expressed through ratings
+    \end{itemize}
+    \item currency:
+    \begin{itemize}
+      \item expressed through activity
+    \end{itemize}
+    \item popularity:
+      \begin{itemize}
+        \item expressed through prominence and logs
+      \end{itemize}
+}
 
 %------------------------------------------------------------------------------
 \subsection{Limitations}
@@ -694,6 +706,11 @@
         \item log data hard to interpret
     \end{itemize}
 \end{frame}
+\note[itemize]{
+    \item not all features available for all conferences
+    \item e.g., ratings only 20\%
+    \item also not much log data and hard to interpret
+}
 
 %
 % \begin{frame}{\currentname}\linespread{1.5}
@@ -727,6 +744,13 @@
     \end{itemize}
   \end{itemize}
 \end{frame}
+\note[itemize]{
+    \item features related to information quality can be used to rank conferences according to urgency for ingestion
+    \item we seem to be able to model curator decisions with these features
+    \item workshops are conflated with conferences, should be separated
+    \item journals?
+    \item LTR
+}
 
 %------------------------------------------------------------------------------
 
